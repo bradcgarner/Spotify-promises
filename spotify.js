@@ -44,16 +44,16 @@ const getArtist = function (name) {
   return getFromApi('search', query).then( function(res){
     artist = res.artists.items[0];
     console.log(artist);
-    return artist; 
+    return getFromApi(`artists/${artist.id}/related-artists`);
   }).then( function(res) {
-    //artist.id
-    query = {id: res.id};
+    
+   
     // It should use the artist ID from the artist object.
     // Chain another then call to handle the response from your second request.
     // Inside the callback you should:
     // Set artist.related to item.artists, where item is the object returned by the get related artists endpoint.
     // Return the artist object.
-    let relArtists =  getFromApi('related-artists', query);
+    
     artist.related = res.artists;
     
     return artist;
