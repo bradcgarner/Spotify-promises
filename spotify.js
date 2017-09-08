@@ -43,20 +43,32 @@ const getArtist = function (name) {
   };
   return getFromApi('search', query).then( function(res){
     artist = res.artists.items[0];
+    console.log('artist');
     console.log(artist);
     return getFromApi(`artists/${artist.id}/related-artists`);
   }).then( function(res) {
-    
-   
     // It should use the artist ID from the artist object.
     // Chain another then call to handle the response from your second request.
     // Inside the callback you should:
     // Set artist.related to item.artists, where item is the object returned by the get related artists endpoint.
     // Return the artist object.
-    
+    let query = {
+      country: 'US'
+    };
     artist.related = res.artists;
-    
+    let arrayofArtists = artist.related.map(item => getFromApi(`artists/${item.id}/top-tracks`, query));
+    console.log('arrayofArtists');
+    console.log(arrayofArtists);
+    return Promise.all(arrayofArtists);
+  }).then(response => {
+    response.map((item, index) => {
+      artist.related[index].tracks = item.tracks;
+    });
+    console.log('final artist');
+    console.log(artist);
     return artist;
+    console.log('final artist');
+    console.log(artist);
   }).catch( function(err){
     console.log('error ' + err);
   });
@@ -67,8 +79,7 @@ const getArtist = function (name) {
     // Return the artist object.
   
     // Return the promise which you created by calling getFromApi.
-};
-
+}
 //getArtist('The Black Keys');
 
 // =========================================================================================================
