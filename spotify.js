@@ -30,13 +30,46 @@ const getFromApi = function (endpoint, query = {}) {
 let artist;
 
 const getArtist = function (name) {
+  console.log('I ran');
   // Edit me!
   // (Plan to call `getFromApi()` several times over the whole exercise from here!)
+
+  // Make a call to the search endpoint using the getFromApi function.
+  // The query parameter should contain the following information:
+  let query = {
+    q: name, // populated from script in the index.html file
+    limit: 1,
+    type: 'artist'
+  };
+  return getFromApi('search', query).then( function(res){
+    artist = res.artists.items[0];
+    console.log(artist);
+    return artist; 
+  }).then( function(res) {
+    //artist.id
+    query = {id: res.id};
+    // It should use the artist ID from the artist object.
+    // Chain another then call to handle the response from your second request.
+    // Inside the callback you should:
+    // Set artist.related to item.artists, where item is the object returned by the get related artists endpoint.
+    // Return the artist object.
+    let relArtists =  getFromApi('related-artists', query);
+    artist.related = res.artists;
+    
+    return artist;
+  }).catch( function(err){
+    console.log('error ' + err);
+  });
+  
+  // Use .then to add a callback which will run when getFromApi resolves.
+   // Inside the callback you should:
+    // Set the artist global to be equal to item.artists.items[0], where item is the information obtained from the API (which will be passed as the first argument to your callback).
+    // Return the artist object.
+  
+    // Return the promise which you created by calling getFromApi.
 };
 
-
-
-
+//getArtist('The Black Keys');
 
 // =========================================================================================================
 // IGNORE BELOW THIS LINE - THIS IS RELATED TO SPOTIFY AUTHENTICATION AND IS NOT NECESSARY  
